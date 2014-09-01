@@ -1,0 +1,64 @@
+body { font-family: Verdana, Arial}
+ul { background-color: #bbb; list-style-type: none; padding: 0; margin: 0; border-radius: 7px; 
+	background-image: -webkit-gradient(linear, left top, left bottom, color-stop(0, #d6d6d6), color-stop(0.4, #c0c0c0), color-stop(1,#a4a4a4)); 
+	margin: 10px 0 16px 0;
+	font-size: 0px;
+}
+
+li:hover { background-color: #ddd; }    
+ li:first-child { border-left: none; border-radius: 7px 0 0 7px; }
+ li { font-size: 16px; font-weight: bold; display: inline-block; padding: 0.5em 1.5em; cursor: pointer; color: #444; text-shadow: #f7f7f7 0 1px 1px; border-left: 1px solid #ddd; border-right: 1px solid #888; }
+li { *display: inline !important; } /* IE7 only */
+li:active { background-color: #444 !important; color: white; text-shadow:none; border-right-color: #aaa; border-left: none; box-shadow:inset 1px 2px 6px #070707; }    
+
+
+.Movie {
+    border: 1px solid;
+	border-radius: 5px;
+	background-color: rgb(242, 247, 244);
+	padding: 5px 5px 5px;
+}
+
+.row320
+{
+	
+	border: 0px 0px 0px;
+}
+.row128
+{
+	
+	border: 0px 0px 0px;
+}
+.rowflac
+{
+	background-color: rgba(167, 207, 238, 0.64);
+	border: 0px 0px 0px;
+}
+
+a:link {
+    text-decoration: none;
+}
+
+a:visited {
+    text-decoration: none;
+}
+
+a:hover {
+    text-decoration: underline;
+}
+
+a:active {
+    text-decoration: underline;
+}
+
+table {
+display: table;
+border-collapse: separate;
+border-spacing: 0px;
+border-color: gray;
+width: 100%
+}
+td
+{
+border: 0px 0px 0px;
+}
