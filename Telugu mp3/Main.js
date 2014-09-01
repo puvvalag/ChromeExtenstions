@@ -149,7 +149,7 @@ var listItemq2 = document.createElement("li");
       //Download links for 320kbps
       //var td320dl0 =  document.createElement("td");
       //td320dl0.innerHTML = "320kbps"
-      FileType320TD.innerHTML = "<strong>320 kbps</strong>"
+      FileType320TD.innerHTML = "320 kbps"
 
       var td320dl1 =  document.createElement("td");
       td320dl1.innerHTML = rockdawayUrlanchor +DLurl320+"'>DirectLink</a>"
@@ -174,7 +174,7 @@ var listItemq2 = document.createElement("li");
       //var td128dl0 =  document.createElement("td");
       //td128dl0.innerHTML = "128kbps"
 
-      FileType128TD.innerHTML = "<strong>128 kbps</strong>";
+      FileType128TD.innerHTML = "128 kbps";
 
       var td128dl1 =  document.createElement("td");
       td128dl1.innerHTML = rockdawayUrlanchor +DLurl128+"'> DirectLink </a>"
