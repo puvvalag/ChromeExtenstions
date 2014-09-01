@@ -1,0 +1,14 @@
+{
+  "manifest_version": 2,
+  "name": "Quick Add ! Create quick calendar events",
+  "version": "1.0",
+  "description": "Quickly add events to your google calander",
+    "browser_action": {
+    "default_icon": "calendar.PNG",
+    "default_title": "Quick Add to Google Calendar",
+    "default_popup": "popup.html"
+	},
+  "icons": { "48": "calendar.PNG" },
+  "permissions": ["tabs"],
+   "author": "Ganesh Kumar Puvvala"
+}
