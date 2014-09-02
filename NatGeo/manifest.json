@@ -1,0 +1,15 @@
+{
+   "browser_action": {
+      "default_icon": "nationalgeo.ico",
+      "default_title": "National Geographic - Photo of the day",
+      "popup": "popup.html"
+   },
+   "description": "",
+   "icons": {
+      "128": "nationalgeo.ico"
+   },
+   "name": "National Geographic - Photo of the day",
+   "permissions": [ "http://*.nationalgeographic.com/*", "tabs" ],
+   "update_url": "http://clients2.google.com/service/update2/crx",
+   "version": "2.0"
+}
