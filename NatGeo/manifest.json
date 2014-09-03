@@ -1,15 +1,21 @@
+
 {
-   "browser_action": {
-      "default_icon": "nationalgeo.ico",
-      "default_title": "National Geographic - Photo of the day",
-      "popup": "popup.html"
-   },
-   "description": "",
-   "icons": {
-      "128": "nationalgeo.ico"
-   },
-   "name": "National Geographic - Photo of the day",
-   "permissions": [ "http://*.nationalgeographic.com/*", "tabs" ],
-   "update_url": "http://clients2.google.com/service/update2/crx",
-   "version": "2.0"
+  "manifest_version": 2,
+
+  "name": "National Geographic - Photo of the day",
+  "short_name" : "Photo of the Day",
+  "description": "Top photo every day, one click far",
+  "version": "3.0",
+
+  "browser_action": {
+    "default_icon": "nationalgeo.ico",
+    "default_popup": "popup.html",
+    "icons": { "16": "nationalgeo.ico",
+           "48": "nationalgeo.ico",
+          "128": "nationalgeo.ico" }
+  },
+  "permissions": [
+    "http://*.nationalgeographic.com/*",
+    "tabs"
+  ]
 }

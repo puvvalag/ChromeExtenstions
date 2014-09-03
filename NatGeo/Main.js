@@ -1,66 +1,4 @@
-<style>
-body{
-  font-family:Verdana;
-background:#FFFFFF;
 
-}
-
-.CenterImage
-{
-border-top: 1px solid #6A5ACD;
-border-left: 2px solid #6A5ACD;
-border-right: 2px solid #6A5ACD;
-border-bottom: 2px solid #6A5ACD;
-
-}
-
-.DownloadLink
-{
-font-family:Verdana;
-font-size:smaller;
-color:#4169E1;
-}
-
-.DownloadText
-{
-text-align:center;
-}
-
-.NavImage:hover
-{
-	background-image: url(rightOn.png);
-	width:20px;
-	height:20px;
-}
-.PhotoTitle
-{
-font-family:Verdana;
-font-size:small;
-color:#4D4D4D;
-}
-
-.PhotoTitleDesc
-{
-font-family:Verdana;
-font-size:xx-small;
-color:#999999;
-}
-
-.Date
-{
-font-family:Verdana;
-font-size:8pt;
-color:#7C7C7C;
-}
-
-.AlignRight
-{
-text-align: right;
-}
-</style>
-
-
-<script>
 var feedUrl = "http://feeds.nationalgeographic.com/ng/photography/photo-of-the-day/";
 
 var req = new XMLHttpRequest();
@@ -68,8 +6,31 @@ var imageText
 var itemIndex  = 0;
 var MAX_ITEMS = 0;
 
+document.addEventListener("DOMContentLoaded", function() {
+  main(); 
+});
+
+function AddEvents()
+{
+  leftImage = document.getElementById("left");
+  leftImage.onmouseover = function () { ChageImage('left'); };
+  leftImage.onmouseout = function () { ChageImage('left'); };
+  leftImage.onclick = function () { Move('-1'); };
+
+  rightImage = document.getElementById("right");
+  rightImage.onmouseover = function () { ChageImage('right'); };
+  rightImage.onmouseout = function () { ChageImage('right'); };
+  rightImage.onclick = function () { Move('1'); };
+
+  feedback = document.getElementById("feedback");
+  feedback.onclick = function(){chrome.tabs.create({url: "http://goo.gl/gaI0Pq", selected: true});};
+
+}
+
+
 function main()
 {
+  AddEvents();
   req.open("GET",feedUrl,false);
   req.overrideMimeType('text/xml')
   req.onload = Display;
@@ -111,7 +72,7 @@ var spanTitle = document.getElementById('title');
 //titleDesc = titleDesc.substr(0,100);
 
   var pTitleDesc = document.getElementById('titleDesc');
- pTitleDesc.innerHTML  = titleDesc;// +"...";
+ //pTitleDesc.innerHTML  = titleDesc;// +"..."; // Commented this as I didnot want to see desc.
 //alert(imageText);
 
   var dt = new Date();
@@ -181,57 +142,3 @@ function Move(value)
 	else
 	itemIndex = 0;
 }
-</script>
-
-<html>
-<body class="main" onload="main()"> 
-<div id="myDiv">
-	<table id="myTable">
-	<tr id="tr0">
-	 <td> &nbsp; </td>
-		<td id = "tdTitle"">
-		  <span id="title"  class="PhotoTitle"> </span> <div class="AlignRight"><span id ="Date" class="Date" > </span></div>
-			<p id = "titleDesc"  class="PhotoTitleDesc"> </p>
-		</td>
-
-		<td> &nbsp; </td>
-
-	</tr>
-
-		<tr  id="tr1">
-			
-			<td>
-			<a id="aPrev">
-				<img id="left" onmouseover="ChageImage('left')"
-				onmouseout="ChageImage('left')" 
-				onclick="Move('-1')" width="20px" height="20px" src="left.png" />
-			</a>
-			</td>
-			
-			<td id="tdCenter" class="CenterImage">
-				<a id="lnkMainPage" target="_blank" href="#"><img id="imgCenter" width="250px" height="200px" />	</a>		
-			</td>
-			
-			<td  >
-			<a id="aNext">
-				<img  id="right" onmouseover="ChageImage('right')"
-				onmouseout="ChageImage('right')" onclick="Move('1')"
-				 width="20px" height="20px" src="right.png" />
-			</a>
-			</td>
-			
-		</tr>
-		<tr>
-			<td colspan="3" class="DownloadText">
-			<img src="download.png"/>
-			<a id="aDownloadLink" href="#" class="DownloadLink"> Download Wallpaper</a>
-			</td>
-		</tr>
-		<tr>
-			<td colspan="3" style="text-align:right;" >
-				<span id="photoBy" class="Date"> </span>
-			</td>
-		</tr>
-	</table>
-</body>
-</html>

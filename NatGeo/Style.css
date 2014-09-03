@@ -1,0 +1,68 @@
+body{
+  font-family:Verdana;
+background:#FFFFFF;
+
+}
+
+.divclass
+{
+	height: 100px;
+
+}
+.CenterImage
+{
+border-top: 1px solid #6A5ACD;
+border-left: 2px solid #6A5ACD;
+border-right: 2px solid #6A5ACD;
+border-bottom: 2px solid #6A5ACD;
+
+}
+
+.DownloadLink
+{
+font-family:Verdana;
+font-size:smaller;
+color:#4169E1;
+}
+
+.DownloadText
+{
+text-align:center;
+}
+.rate
+{
+	color:#4169E1;
+	cursor: pointer;
+}
+
+.NavImage:hover
+{
+	background-image: url(rightOn.png);
+	width:20px;
+	height:20px;
+}
+.PhotoTitle
+{
+font-family:Verdana;
+font-size:normal;
+color:#4D4D4D;
+}
+
+.PhotoTitleDesc
+{
+font-family:Verdana;
+font-size:xx-small;
+color:#999999;
+}
+
+.Date
+{
+font-family:Verdana;
+font-size:7pt;
+color:#7C7C7C;
+}
+
+.AlignRight
+{
+text-align: right;
+}
