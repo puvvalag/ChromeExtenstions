@@ -42,9 +42,16 @@ function Display()
 
       var title = items[i].getElementsByTagName("title")[0].innerHTML;
      
+    var metadata = content.substring(content.indexOf("Cast &amp; Crew ::"),content.indexOf("Ripper ::"));
+    metadata = metadata.replace(/amp;/g,"");
+    metadata = metadata.replace(/<span style="color: #008000;"><strong>/g,"");
+    metadata = metadata.replace(/<\/strong>/g,"");
+    metadata = metadata.replace(/<\/span><br \/>/g,"");
+    metadata = metadata.replace(/: <\/strong>/g,"");
+    metadata = metadata.replace(/::/g,":");
+
     var rockwayDirectDownload = content.match(/links.*DirectLink/g);
     var Download128kbpsUrl = "http://www.zindagijobs.net/links/?S*" + rockwayDirectDownload[1].substr(9,4);
-      //alert(Download128kbpsUrl);
     var anchor = document.createElement("a");
     anchor.id = "a"+i;
     anchor.alt = Download128kbpsUrl;
@@ -52,7 +59,7 @@ function Display()
     //anchor.title = "test";
     var movie = document.createElement("img");
     //movie.style = 'height:200px';
-    movie.title =  title;
+    movie.title =  metadata; 
     movie.src = imgUrl;
     mainDiv.className="polaroid-images";
 
