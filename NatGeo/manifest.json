@@ -5,7 +5,7 @@
   "name": "National Geographic - Photo of the day",
   "short_name" : "Photo of the Day",
   "description": "Top photo every day, one click far",
-  "version": "3.0",
+  "version": "3.1",
 
   "browser_action": {
     "default_icon": "nationalgeo.ico",
