@@ -44,11 +44,29 @@ function Display() {
         metadata = metadata.replace(/: <\/strong>/g, "");
         metadata = metadata.replace(/::/g, ":");
         //alert(metadata);
-        var rockwayDirectDownload = content.match(/new.*DirectLink/g);
-
+        var rockwayDirectDownload = "";
+        var regex = ""
+        var Download128kbpsUrl = "";
+        var index = 0;
+        if(content.indexOf("http://www.zindagijobs.net/links/") > 0)
+        {
+            //alert('In');
+            regex = /links.*DirectLink/g;
+            Download128kbpsUrl = "http://www.zindagijobs.net/links/?S*";
+            index = 9;
+        }
+        else
+        {
+            regex = /new.*DirectLink/g;
+            Download128kbpsUrl = "http://www.iknowblogging.com/new/?S*";
+            index = 7;
+        }
+        rockwayDirectDownload = content.match(regex);
+        
         if (rockwayDirectDownload != null) {
             //http://www.zindagijobs.net/links/
-            var Download128kbpsUrl = "http://www.iknowblogging.com/new/?S*" + rockwayDirectDownload[1].substr(9, 4);
+           
+            Download128kbpsUrl +=  rockwayDirectDownload[1].substr(index, 4);
             var anchor = document.createElement("a");
             anchor.id = "a" + i;
             anchor.alt = Download128kbpsUrl;
