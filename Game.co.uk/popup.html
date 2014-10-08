@@ -1,0 +1,322 @@
+<style>
+body{
+  min-width:400px;
+  overflow-x:hidden;
+}
+
+#title_bar{
+background: #A52084;
+border-top: 1px solid #6B90DA;
+padding-bottom: 4px;
+padding-left: 8px;
+padding-top: 4px;
+color: White;
+}
+.main {
+font-family:Verdana;
+background:#E9EBED;
+font-size:small;
+color:#AC288C;
+}
+
+.item_desc{
+color:#656565;
+padding-left: 5px;
+}
+.a, a:link{
+text-decoration: none;
+}
+
+a:hover, a:active{
+text-decoration: underline;
+}
+
+.item_title{
+color: #AC288C;
+}
+
+.item_img{
+width:96px;
+height: 100px;
+}
+
+.table_style{
+font-size:small;
+}
+
+.buy{
+display:block;
+
+color:#3992C1;
+font-weight: bold;
+font-size: 0.8929em;
+}
+
+.quicklinks{
+color:#A12283;
+font-size: 0.7em;
+float:right;
+}
+</style>
+
+<script>
+var isNews = false;
+var feedUrl = InitializeFeed();
+var MAX_ITEMS = isNaN(localStorage["item_count"]) ? 15 : localStorage["item_count"] > 0 ? localStorage["item_count"] : 15;
+var URL = new Array();
+var IMAGE_URL = new Array();
+var req = new XMLHttpRequest();
+
+function main()
+{
+  req.open("GET",feedUrl,true);
+  req.onload = Display;
+  req.send(null);
+}
+
+function Display()
+{
+  var doc = req.responseXML;
+  var items = doc.getElementsByTagName("item");
+  var listDesc = doc.getElementsByTagName("description");
+  var obj = document.getElementById("title_bar");
+  obj.innerHTML = listDesc[0].textContent;
+  var feed = document.getElementById("gamefeed");
+  var itemList = doc.getElementsByTagName('item');
+  var count = Math.min(itemList.length, MAX_ITEMS);
+  
+  var table = document.createElement('TABLE');	
+  table.id="DataTable";
+  var tbdy=document.createElement('TBODY');
+  tbdy.className="table_style";
+  table.appendChild(tbdy);
+  for(i=0; i < count; i++)
+  {
+	var item = itemList.item(i);
+
+	// Capture the Title
+	var itemTitle = item.getElementsByTagName('title')[0];
+	if(itemTitle)
+		itemTitle = itemTitle.textContent;
+	else
+		itemTitle = "Unknown";
+
+	// Capture description
+	var itemDesc = item.getElementsByTagName('description')[0];
+	if(itemDesc)
+		itemDesc = itemDesc.textContent;
+	else
+		itemDesc = "Empty";
+
+	// Get link
+	var itemLink = item.getElementsByTagName('link')[0];
+	if(itemLink)
+		itemLink = itemLink.textContent;
+	else
+		itemLink = "";
+
+	URL[i] = itemLink;
+
+	item = document.createElement("tr");
+    item.className = "item";
+	item.id = "item"+i;
+	
+
+	tbdy.appendChild(item);
+
+	var image = document.createElement("img");
+	image.className = "item_img";
+	image.src = "";
+	image.onerror =  function (evt) {this.src = "http://img.game.co.uk/PlatformPackshots/bps_psp_96w115h.gif"; };
+
+	var td1=document.createElement('TD');
+	if(!isNews)	
+	td1.appendChild(image); 
+
+	var a = document.createElement("a");
+    a.className = "buy";
+    a.innerText = "Add to basket";
+	a.id = "buy"+i;
+	a.href = "";// function(){AddToBasket(this.id);};
+	a.onclick = function(){AddToBasket(this.id);};
+   if(!isNews)
+   {
+    td1.appendChild(a);
+    item.appendChild(td1);
+   }
+	var td2=document.createElement('TD');
+	// Add title
+	var title = document.createElement("a");
+    title.className = "item_title";
+    title.innerText = itemTitle;
+	title.href=""
+	title.id = "title"+i;
+	title.onclick = function(){OpenTab(this.id);};
+    td2.appendChild(title);
+
+	// Add Description
+	var desc = document.createElement("span");
+	desc.className = "item_desc";
+	desc.innerHTML = itemDesc;
+	td2.appendChild(desc);
+	item.appendChild(td2);
+  }
+  feed.appendChild(table);
+  ConfigureImages();
+}
+
+
+
+function ConfigureImages()
+{
+	var imageList = document.getElementsByClassName("item_img");
+	for(i=0; i< imageList.length; i++)
+	{
+		
+	 var mediaId = URL[i].substr(URL[i].indexOf("~r")+2,6);
+	 var imageUrl = "http://img.game.co.uk/ml/"
+ 
+	 for(j=0;j < 4; j++)
+	 {
+		imageUrl += mediaId.charAt(j) +"/"; 
+	 }
+	 imageUrl += mediaId + "ps_96w115h.gif";
+	 imageList[i].src = imageUrl;
+	 
+	}
+}
+
+function AddToBasket(id)
+{
+ var obj = document.getElementById(id);
+ var index = obj.id;
+ index = index.substring(3);
+ var mediaId = URL[index].substr(URL[index].indexOf("~r")+2,6);
+ var addToBasketUrl = "https://www.game.co.uk/Checkout/Basket/?add="+ mediaId;
+ chrome.tabs.getAllInWindow(null, function (tabs)
+	{
+	var isTabUpdated = false;
+
+	for(i = 0; i < tabs.length; i++)
+	{
+		var tabUrl = encodeURIComponent(tabs[i].url);
+		if(tabUrl.indexOf("game.co.uk") != -1 && tabUrl.indexOf("Checkout") != -1)  
+		{
+			chrome.tabs.update(tabs[i].id, {url: addToBasketUrl, selected: true}); // update the tab
+			isTabUpdated = true;
+			break;
+		}
+	}
+	if(!isTabUpdated)
+		{
+		for(i = 0; i < tabs.length; i++)
+		{
+			var tabUrl = encodeURIComponent(tabs[i].url);
+			if(tabUrl.indexOf("game.co.uk") != -1) // If game.co.uk is already opened in any of the tabs.
+			{
+				chrome.tabs.update(tabs[i].id, {url: addToBasketUrl, selected: true}); // update the tab
+				isTabUpdated = true;
+				break;
+			}
+		}
+	}
+	if(!isTabUpdated) // If it is not already opened, create a new tab and focus.
+		chrome.tabs.create({url: addToBasketUrl, selected: true});	
+	});
+ }
+
+function OpenTab(id)
+{
+ var obj = document.getElementById(id);
+ var index = obj.id;
+ index = index.substring(5);
+ productUrl = URL[index];
+ 
+ chrome.tabs.getAllInWindow(null, function (tabs)
+  {
+   var isTabUpdated = false;
+	for(i = 0; i < tabs.length; i++)
+	{
+	var tabUrl = encodeURIComponent(tabs[i].url);
+	if(tabUrl.indexOf("game.co.uk") != -1 && tabUrl.indexOf("Checkout") == -1) 
+		{
+		chrome.tabs.update(tabs[i].id, {url: productUrl, selected: true}); // update the tab
+		isTabUpdated = true;
+		break;
+		}
+	}
+	if(!isTabUpdated) // If it is not already opened, create a new tab and focus.
+	chrome.tabs.create({url: productUrl, selected: true});	
+ });
+}
+function ClearData()
+{
+var feed = document.getElementById("gamefeed");
+var table = document.getElementById("DataTable");
+feed.removeChild(table);
+}
+
+function InitializeFeed()
+{
+ if(localStorage["choice"] != null)
+ {
+  isNews = localStorage["choice"] == 3;
+  if(localStorage["choice"] == 1)
+    return "http://www.game.co.uk/feeds/ComingSoon.ashx";
+  else if(localStorage["choice"] == 2)
+    return "http://www.game.co.uk/feeds/NewReleases.ashx";
+  else if (localStorage["choice"] == 3)
+    return "http://www.game.co.uk/feeds/news.ashx";
+ }
+ else
+   return "http://www.game.co.uk/feeds/ComingSoon.ashx";
+}
+
+function ChangeFeed(choice)
+{ 
+ switch(choice)
+ {
+	case 1: 
+			{
+			feedUrl = "http://www.game.co.uk/feeds/ComingSoon.ashx";
+			isNews = false;
+			break;
+			}
+	case 2:
+			{
+			feedUrl = "http://www.game.co.uk/feeds/NewReleases.ashx";
+			isNews = false;
+			break;
+			}
+	case 3:
+			{
+			feedUrl = "http://www.game.co.uk/feeds/news.ashx";
+			isNews = true;
+			break;
+			}		
+	
+ }
+ ClearData();
+ main();
+}
+
+</script>
+<html>
+<body class="main" onload="main()"> 
+<table id="MainTable">
+<tr>
+<td>
+	<img src="gamelogo.gif"/>
+</td>
+<td class="quicklinks">
+	<a id="ComingSoon" style="color:#A12283;" href="#" onclick="ChangeFeed(1)"> Coming Soon</a> |
+	<a id="Latest" style="color:#A12283;" href="#" onclick="ChangeFeed(2)">New releases</a> | 
+	<a id="News" style="color:#A12283;" href="#" onclick="ChangeFeed(3)">News</a>
+<td>
+<tr>
+<td colspan="2">
+<h5 id="title_bar"> ... Oop! Offline. </h5>
+<div id="gamefeed" class="data"> </div>
+<td>
+</body>
+</html>

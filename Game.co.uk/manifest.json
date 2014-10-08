@@ -1,0 +1,17 @@
+{
+"update_url":"http://clients2.google.com/service/update2/crx",
+  "name": "Game.co.uk",
+  "version": "1.5.2",
+  "description": "",
+  "options_page":"Options.html",
+  "browser_action": {
+    "default_icon": "game.ico",
+    "default_title": "game.co.uk",
+    "popup": "popup.html"
+  },
+"icons": { "128": "game.ico" },
+  "permissions": [
+    "http://www.game.co.uk/*",
+    "tabs"
+  ]
+}

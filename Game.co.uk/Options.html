@@ -1,0 +1,229 @@
+<style>
+
+body {
+background:url("www.game.co.uk/css/gameUK/img/bg/header_bg1.gif") repeat-x scroll 0 0 #E9EBED;
+border-color:#CCCCCC;
+border-style:solid;
+border-width:0 1px;
+margin:0 auto;
+width:1000px;
+font-family:Verdana;
+}
+
+.main_box{
+
+}
+
+.box_p {
+height:300px;
+margin-bottom:2%;
+margin-left:25%;
+margin-top:5%;
+position:relative;
+width:550px;
+}
+
+.box_p .br {background:url(http://www.game.co.uk/css/gameUK/img/bg/br_p.png) bottom right no-repeat; padding:0 9px 10px 0; float:left; width:100%; height:100%;}
+.box_p .bl {background:url(http://www.game.co.uk/css/gameUK/img/bg/bl_p.png) bottom left no-repeat; padding-bottom:10px; float:left; width:100%; height:100%}
+.box_p .tr {background:url(http://www.game.co.uk/css/gameUK/img/bg/tr_p.png) top right no-repeat; padding-right:9px; margin-right:-9px; float:left; width:100%; height:100%; position:relative;}
+.box_p .tl {background:url(http://www.game.co.uk/css/gameUK/img/bg/tl_p.png) top left no-repeat; float:left; width:100%; height:100%}
+.box_p h2 {color:#fff; background-image:none!important; margin-top:6px;}
+.box_p h2 label {padding-right:5px;}
+.shopping_basket {width: 200px;}
+
+.shopping_basket h2{
+font-size: 11pt;
+margin-left:5px;
+}
+
+.normal{
+color:#656565;
+font-size:8pt;
+margin:8px 25px;
+width:150px;
+}
+
+.label{
+color: #656565;
+font-size: 9pt;
+font-weight:bold;
+vertical-align:top;
+}
+
+.main_tabel{
+width:300px;
+margin:25px 0 0 90px;
+}
+
+.choice{
+color: #656565;
+font-size: 9pt;
+text-align:left;
+}
+
+.txtsmall{
+width:60px;
+color: #656565;
+font-size: 10pt;
+text-align:center;
+}
+
+.button{
+background:url("http://www.game.co.uk/css/gameUK/img/btn/btn_add_new.gif") no-repeat scroll 0 5px transparent;
+margin:0 0 0 125px;
+padding:10px 85px 0 45px;
+padding-bottom: 10px;
+font-size: 9pt;
+color: #fff;
+text-align:center;
+font-weight:bold;
+position:relative;
+}
+.save{
+width:125px;
+height:50px;
+}
+
+
+.rounded-corners {
+     -moz-border-radius: 5px;
+    -webkit-border-radius: 5px;
+    -khtml-border-radius: 5px;
+    border-radius: 5px;
+}
+
+
+.info{
+font-size:12px;
+color:#fff;
+background:#A12283;
+width:120px;
+height:15px;
+text-align:center;
+margin-top: 10px;
+margin-left: 128px;
+}
+
+</style>
+
+
+<script>
+var TIME_TO_FADE =1000;
+var TIME;
+
+function Save()
+{
+
+	var countObj = document.getElementById("txtItemCount");
+	localStorage["item_count"] = countObj.value;
+
+	var choiceList = document.getElementsByName("default_choice");
+	for(i = 0;  i< choiceList.length; i++)
+		if(choiceList[i].checked)
+			localStorage["choice"] = choiceList[i].value;
+
+	var statusObj = document.getElementById("status");
+	var message = "Oops! Empty.."
+	if(countObj.value.length > 0) message = "Settings saved";	
+	statusObj.innerHTML = message;
+	statusObj.style.opacity = 1;
+	statusObj.TimeLeft = TIME_TO_FADE;
+	if(message === "Settings saved")
+	TIME = setTimeout("FadeOut(" + -1 + ")",3000);
+
+	
+}
+
+function FadeOut(lastTick)
+{
+var curTick = new Date().getTime();
+var elapsedTicks;
+var element = document.getElementById("status");
+lastTick == -1 ?  elapsedTicks = 0 : elapsedTicks = curTick - lastTick;
+
+if(element.TimeLeft <= elapsedTicks)
+{
+element.style.opacity = 0;
+clearTimeout(TIME);
+return;
+}
+
+element.TimeLeft -= elapsedTicks;
+var newVal = element.TimeLeft / TIME_TO_FADE;
+element.style.opacity = newVal;
+
+TIME = setTimeout("FadeOut(" + curTick + ")",100);
+}
+
+function Load()
+{
+	var countObj = document.getElementById("txtItemCount");
+	countObj.value= localStorage["item_count"] != null ? localStorage["item_count"]  : "" ;
+
+    var ChoiceList = document.getElementsByName("default_choice");
+	
+	if(localStorage["choice"] == null)
+	  localStorage["choice"] = 1;
+
+	ChoiceList[localStorage["choice"] -1].checked = true;
+}
+
+
+</script>
+<html>
+<head>
+<title>
+Game.co.uk Settings
+</title>
+</head>
+<body onload="Load()">
+<div class="main_box">
+<div class="box_p">
+    <div class="br">
+        <div class="bl">
+            <div class="tr">
+                <div class="tl">
+                    <div class="shopping_basket">
+                        <h2>Settings</h2>
+								<span class="normal"> How do you want this to be ? </span>	
+								<table  class="main_tabel">
+									<tr>
+										<td class="label" >
+											Default display
+										</td> 
+										<td class="choice"> <form>
+										 <input type ="radio" name="default_choice" value="1" /> Coming soon <br />
+									<input type ="radio" name="default_choice" value="2" /> New releases <br />
+										 <input type ="radio" name="default_choice" value="3"/> News <br /> <br /> <br />
+										 </form>
+										</td>
+									</tr>
+									<tr>
+										<td class="label" >
+											No.of items per view
+										</td> 
+										<td >
+								<input type ="text" class="txtsmall" id="txtItemCount" maxlength="2" /> 
+										</td>
+									</tr>
+									<tr>
+									<td colspan="2" height="50px">
+									<br /> <br />
+									<a id="save" class="button" href="#" onclick="Save()" > <span class="save">Save </span></a>
+									</tr>
+									<tr>
+										<td colspan="2">
+											<div id = "status" style="opacity:0;" class="info  rounded-corners" > </div>
+										</td>
+									</tr>
+								</table>
+					</div>
+				</div>
+			</div>
+		</div>	
+	</div>
+</div>
+</div>
+
+</body>
+</html>
