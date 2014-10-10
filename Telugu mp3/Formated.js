@@ -50,15 +50,21 @@ function Display() {
         var index = 0;
         if(content.indexOf("http://www.zindagijobs.net/links/") > 0)
         {
-            //alert('In');
+            
             regex = /links.*DirectLink/g;
             Download128kbpsUrl = "http://www.zindagijobs.net/links/?S*";
             index = 9;
         }
-        else
+        else if (content.indexOf("www.iknowblogging.com/new/") > 0)
         {
             regex = /new.*DirectLink/g;
             Download128kbpsUrl = "http://www.iknowblogging.com/new/?S*";
+            index = 7;
+        }
+        else if (content.indexOf("www.iknowblogging.com/links/") > 0)
+        {
+            regex = /links.*DirectLink/g;
+            Download128kbpsUrl = "http://www.iknowblogging.com/links/?S*";
             index = 7;
         }
         rockwayDirectDownload = content.match(regex);
