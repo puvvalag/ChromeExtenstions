@@ -65,7 +65,7 @@ function Display() {
         {
             regex = /links.*DirectLink/g;
             Download128kbpsUrl = "http://www.iknowblogging.com/links/?S*";
-            index = 7;
+            index = 9;
         }
         rockwayDirectDownload = content.match(regex);
         
