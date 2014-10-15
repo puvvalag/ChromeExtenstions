@@ -53,7 +53,7 @@ for(i = 1;i < 7; i++)
     
     var regImage = /[a-zA-Z0-9\-\.\%\/\\\_\-\:\+\(\)]*(png)|[a-zA-Z0-9\-\.\%\/\\\_\-\:\+\(\)]*(jpg)/g
     var regSummary = /"summary":[A-Za-z0-9\'\\\–\"\:\,\(\)\$\{\|\.\-\ ]*/g
-    var regMovieName = /Movie Name :[A-Za-z0-9\'\–\"\:\,\(\)\$\{\|\.\-\ \ ]*/g
+    var regMovieName =  /Movie Name : .*?\\/g 
 
     var feedData = req.responseText;
 
@@ -66,11 +66,12 @@ for(i = 1;i < 7; i++)
             
            // var movieName = titles[i].replace(/Movie Name : /g, '');
             var movieName = titles[i].substring(13)
+            movieName = movieName.substring(0,movieName.length-2)
             //movieName.replace(/Movie Name : /g, '');
             //var link = movieName.replace(/ /g,"%20");
            // link = movieName.replace(/ /g,"%20");
             var anchor = document.createElement("a");
-            anchor.text = titles[i]// movieName+" "+ link;
+            //anchor.text = movieName //titles[i]// movieName+" "+ link;
             anchor.junk = "http://dl69.unlimited9.com/0/omzl69djk7hxdn/"+ titles[i] +".zip";
             anchor.onclick = function() {
                 Download(this)
