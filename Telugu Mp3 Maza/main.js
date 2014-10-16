@@ -16,9 +16,9 @@ function Download(element) {
 
 function ChangeSelection(obj)
 {
-    for(i = 1;i < 7; i++)
+    for(j = 1;j < 7; j++)
     {
-    var li = document.getElementById("li"+i);
+    var li = document.getElementById("li"+j);
     li.className = "";
     }
     obj.className = "selected";
@@ -28,24 +28,40 @@ function ChangeSelection(obj)
     Init(obj.feed);
     
 }
-var feeds = ["http://www.mazamp3.com/feeds/posts/summary/-/New%20Mp3?max-results=50&alt=json-in-script&callback=recentpostslist","http://www.mazamp3.com/feeds/posts/summary/-/old%20is%20gold?max-results=30&alt=json-in-script&callback=recentpostslist","http://www.mazamp3.com/feeds/posts/summary/-/Pop%2FRemix?max-results=25&alt=json-in-script&callback=recentpostslist","http://www.mazamp3.com/feeds/posts/summary/-/Ilayaraja?max-results=25&amp;alt=json-in-script&amp;callback=recentpostslist","http://www.mazamp3.com/feeds/posts/summary/-/Devotional?max-results=30&amp;alt=json-in-script&amp;callback=recentpostslist","http://www.mazamp3.com/feeds/posts/summary/-/Update?max-results=50&amp;alt=json-in-script&amp;callback=recentpostslist"]
+
+
+
+//called with every property and it's value
+function process(key,value) {
+    console.log(key + " : "+value);
+}
+
+function traverse(o,func) {
+    for (var i in o) {
+        func.apply(this,[i,o[i]]);  
+        if (o[i] !== null && typeof(o[i])=="object") {
+            //going on step down in the object tree!!
+            traverse(o[i],func);
+        }
+    }
+}
+
+//that's all... no magic, no bloated framework
+
+
+var feeds = ["http://www.mazamp3.com/feeds/posts/summary/-/New%20Mp3?max-results=50&alt=json-in-script&callback=recentpostslist","http://www.mazamp3.com/feeds/posts/summary/-/old%20is%20gold?max-results=50&alt=json-in-script&callback=recentpostslist","http://www.mazamp3.com/feeds/posts/summary/-/Pop%2FRemix?max-results=50&alt=json-in-script&callback=recentpostslist","http://www.mazamp3.com/feeds/posts/summary/-/Ilayaraja?max-results=50&amp;alt=json-in-script&amp;callback=recentpostslist","http://www.mazamp3.com/feeds/posts/summary/-/Devotional?max-results=50&amp;alt=json-in-script&amp;callback=recentpostslist","http://www.mazamp3.com/feeds/posts/summary/-/Update?max-results=50&amp;alt=json-in-script&amp;callback=recentpostslist"]
 var feedTitle = "";
 function Display() 
 {
-  // alert('InDisplay')
-for(i = 1;i < 7; i++)
+
+    
+
+for(j = 1;j < 7; j++)
 {
-    var li = document.getElementById("li"+i);
+    var li = document.getElementById("li"+j);
     li.onclick = function(obj) { ChangeSelection(this);}
-    li.feed = feeds[i-1];
+    li.feed = feeds[j-1];
 }
-
-    /**************************/
-//var li = document.getElementById("li1");
-//li.className = "selected";
-
-
-    /**************************/
 
     var mainDiv = document.getElementById("mainDiv");
     var rootChild = document.createElement("div");
@@ -53,26 +69,38 @@ for(i = 1;i < 7; i++)
     
     var regImage = /[a-zA-Z0-9\-\.\%\/\\\_\-\:\+\(\)]*(png)|[a-zA-Z0-9\-\.\%\/\\\_\-\:\+\(\)]*(jpg)/g
     var regSummary = /"summary":[A-Za-z0-9\'\\\–\"\:\,\(\)\$\{\|\.\-\ ]*/g
-    var regMovieName =  /Movie Name : .*?\\/g 
+    var regMovieName =   /Movie Name :(.*?)*/g 
+    var offset = 0 
+    if( feedTitle == "Latest" || feedTitle == "Old" || feedTitle == "Pop / Remix" || feedTitle == "")
+             {
+                regMovieName = /Movie Name :.*?\\/g 
+                offset = 2
+             }
 
-    var feedData = req.responseText;
-
+    var feedData = req.responseText
     var items = feedData.match(regImage);
     var titles = feedData.match(regMovieName);
-    req=feedData;
+    //traverse(req.responseText,process);
     
     //Create root div for each item
     for (var i = 0; i < items.length; i++) {
             
            // var movieName = titles[i].replace(/Movie Name : /g, '');
-            var movieName = titles[i].substring(13)
-            movieName = movieName.substring(0,movieName.length-2)
+            var movieName = titles[i] == null ? "Dummy" : titles[i].substring(13)
+            //console.log("i: "+i+"movieName : "+movieName);
+            
+            movieName = movieName.substring(0,movieName.length - offset)
             //movieName.replace(/Movie Name : /g, '');
             //var link = movieName.replace(/ /g,"%20");
            // link = movieName.replace(/ /g,"%20");
             var anchor = document.createElement("a");
             //anchor.text = movieName //titles[i]// movieName+" "+ link;
-            anchor.junk = "http://dl69.unlimited9.com/0/omzl69djk7hxdn/"+ titles[i] +".zip";
+            //var link = movieName.replace(/\%C2\ |\ /g,' ')
+            var link = encodeURI(movieName)
+            link = link.replace("%C2%A0", '%20');
+            link = link.replace("%E2%80%93",'-')
+            console.log(link);
+            anchor.junk = "http://dl69.unlimited9.com/0/omzl69djk7hxdn/"+ link +".zip";
             anchor.onclick = function() {
                 Download(this)
             };
@@ -80,6 +108,8 @@ for(i = 1;i < 7; i++)
             var movie = document.createElement("img");
             //movie.style = 'height:200px';
             movie.title = movieName;
+
+
             var url = items[i];
              if( feedTitle == "Latest" || feedTitle == "Old" || feedTitle == "Pop / Remix" || feedTitle == "" )
              {
