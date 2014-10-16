@@ -9,6 +9,9 @@
     "default_popup": "popup.html" 
 
   },
+  "background": {
+    "scripts": ["background.js"]
+  },
   "icons": { "16": "icon.png",
              "48": "icon.png",
             "128": "icon.png" },

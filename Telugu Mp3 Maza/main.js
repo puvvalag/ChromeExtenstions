@@ -12,6 +12,7 @@ function Download(element) {
          'width':100,
          'height' : 100
         });
+        
 }
 
 function ChangeSelection(obj)
@@ -89,7 +90,19 @@ for(j = 1;j < 7; j++)
             var movieName = titles[i] == null ? "Dummy" : titles[i].substring(13)
             //console.log("i: "+i+"movieName : "+movieName);
             
-            movieName = movieName.substring(0,movieName.length - offset)
+            if(movieName.substring(movieName.length-1,movieName.length) == '\\')
+            {
+              movieName =  movieName.substring(0,movieName.length-1);
+            }
+            while(movieName.substring(movieName.length-1,movieName.length) == ' ')
+            {
+                console.log(movieName);
+              movieName =  movieName.substring(0,movieName.length-1);
+            }            
+
+            
+           // console.log(movieName)
+            //movieName = movieName.substring(0,movieName.length - offset)
             //movieName.replace(/Movie Name : /g, '');
             //var link = movieName.replace(/ /g,"%20");
            // link = movieName.replace(/ /g,"%20");
@@ -98,8 +111,9 @@ for(j = 1;j < 7; j++)
             //var link = movieName.replace(/\%C2\ |\ /g,' ')
             var link = encodeURI(movieName)
             link = link.replace("%C2%A0", '%20');
+            link = link.replace("%C2%A0", '');
             link = link.replace("%E2%80%93",'-')
-            console.log(link);
+            //console.log(link);
             anchor.junk = "http://dl69.unlimited9.com/0/omzl69djk7hxdn/"+ link +".zip";
             anchor.onclick = function() {
                 Download(this)
