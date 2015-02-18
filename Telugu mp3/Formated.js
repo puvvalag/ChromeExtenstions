@@ -72,7 +72,8 @@ function Display() {
         if (rockwayDirectDownload != null) {
             //http://www.zindagijobs.net/links/
            
-            Download128kbpsUrl +=  rockwayDirectDownload[1].substr(index, 4);
+           // Download128kbpsUrl +=  rockwayDirectDownload[1].substr(index, 4); this gave an error in Jan 2015, changed the rockwayDirectDownload[1] to rockwayDirectDownload[0]
+		    Download128kbpsUrl +=  rockwayDirectDownload[0].substr(index, 4);
             var anchor = document.createElement("a");
             anchor.id = "a" + i;
             anchor.alt = Download128kbpsUrl;
