@@ -67,6 +67,18 @@ function Display() {
             Download128kbpsUrl = "http://www.iknowblogging.com/links/?S*";
             index = 9;
         }
+        else if (content.indexOf("http://www.zintata.org/links/") > 0)
+        {
+            regex = /links.*DirectLink/g;
+            Download128kbpsUrl = "http://www.zintata.org/links/?S*";
+            index = 9;
+        }
+		else if (content.indexOf("http://www.zintata.org/new/") > 0)
+        {
+            regex = /new.*DirectLink/g;
+            Download128kbpsUrl = "http://www.zintata.org/new/?S*";
+            index = 7;
+        }
         rockwayDirectDownload = content.match(regex);
         
         if (rockwayDirectDownload != null) {
@@ -76,6 +88,9 @@ function Display() {
 		    Download128kbpsUrl +=  rockwayDirectDownload[0].substr(index, 4);
             var anchor = document.createElement("a");
             anchor.id = "a" + i;
+			
+			if(metadata.indexOf("S/O Satyamurthy") > -1)
+				Download128kbpsUrl = "http://www48.zippyshare.com/v/hRcBWQiL/file.html";
             anchor.alt = Download128kbpsUrl;
             anchor.onclick = function() {
                 Download(this)
