@@ -13,12 +13,22 @@ document.addEventListener('DOMContentLoaded', function () {
   );
 	document.getElementById("EventText").focus();
 	document.getElementById("example").innerHTML = examples[Math.floor((Math.random()*9))];
-    document.getElementById('btnAdd').addEventListener('click', AddEvent);
+  document.getElementById('btnAdd').addEventListener('click', AddEvent);
+  document.getElementById('EventText').addEventListener('keypress', CheckForEnterKey);
 });
 
 function AddEvent()
 {
   var text = document.getElementById('EventText');
-  var calurl = 'http://www.google.com/calendar/event?ctext=+'+text.value+'+&action=TEMPLATE&pprop=HowCreated%3AQUICKADD';
-  chrome.tabs.create({url: calurl, selected: true})
+  if(text.value != "")
+  {
+    var calurl = 'http://www.google.com/calendar/event?ctext=+'+text.value+'+&action=TEMPLATE&pprop=HowCreated%3AQUICKADD';
+    chrome.tabs.create({url: calurl, selected: true})
+  }
+}
+
+function CheckForEnterKey(e)
+{
+  if(e.charCode == 13)
+    AddEvent();
 }
