@@ -1,10 +1,13 @@
 {
   "manifest_version": 2,
   "name": "Quick Add ! Create quick calendar events",
-  "version": "1.5",
+  "version": "1.6",
   "description": "Quickly add events to your google calander",
     "browser_action": {
-    "default_icon": "calendar.PNG",
+        "default_icon": {                        
+                "48": "calendar.png",        
+                "128": "calendar128.png"
+              },
     "default_title": "Quick Add to Google Calendar",
     "default_popup": "popup.html"
 	},
