@@ -1,146 +1,141 @@
 
 
+$(document).ready(function(){
+    AddEvents();
+    var content;
+    getRemote();
+    function getRemote() {
+        var url = dynamicUrl === "" ? currentMonthResourceUrl : dynamicUrl; 
+        console.log(url);
+     var content = $.ajax({
+          type: "GET",
+          url: url,
+          success: function(data){
+            PrepareCatalog(data);
+            if(dynamicUrl === "")
+              Display(0);
+        }
+      }).responseText; 
+  }
 
-document.addEventListener("DOMContentLoaded", function() {
-  main(); 
-});
+  function PrepareCatalog(data)
+  {
+      var counter = 1;
+      var dateString = data.items[0].publish_date;
+      
+      var dateObj = new Date(dateString);
+      var monthCatalog = new Object();
+      monthCatalog.month = dateObj.getMonth() + 1;
+      monthCatalog.year = dateObj.getFullYear();
+      monthCatalog.imagery = [];
+      monthCatalog.totalImagesAvailable = data.items.length;
+      monthCatalog.current = "https://www.nationalgeographic.com/photography/photo-of-the-day/_jcr_content/.syndication-gallery."+ monthCatalog.year +"-"+ monthCatalog.month +".json";
+      monthCatalog.prev = data.previous_endpoint;
+      monthCatalog.next = data.next_endpoint;
+      data.items.forEach(getImageArtifacts);
+      function getImageArtifacts(i){
+        var imageArtifacts = new Object();
+        imageArtifacts.Title = i.image.title;
+        imageArtifacts.PublishDate = i.publish_date;
+        imageArtifacts.Month = dateObj.getMonth() + 1;
+        imageArtifacts.Year = dateObj.getFullYear();
+        imageArtifacts.Thumbnail = i.image.renditions[12].uri;
+        imageArtifacts.DownloadLink = i.image.uri;
+        imageArtifacts.Caption = i.image.caption;
+        monthCatalog.imagery.push(imageArtifacts);
+        ++maxImageCounter;
+        completeImageCatalog[currentImageCounter] = imageArtifacts;
+        ++currentImageCounter;
+    };
+    monthWiseImageCataog[monthCatalog.year +''+ monthCatalog.month] = monthCatalog;
+  }
+  
+  function AddEvents()
+  {
+    leftImage = document.getElementById("left");
+    leftImage.onmouseover = function () { ChageImage('left'); };
+    leftImage.onmouseout = function () { ChageImage('left'); };
+    leftImage.onclick = function () { Move('-1'); };
+  
+    rightImage = document.getElementById("right");
+    rightImage.onmouseover = function () { ChageImage('right'); };
+    rightImage.onmouseout = function () { ChageImage('right'); };
+    rightImage.onclick = function () { Move('1'); };
+  
+    feedback = document.getElementById("feedback");
+    feedback.onclick = function(){chrome.tabs.create({url: "http://goo.gl/gaI0Pq", selected: true});};
+    
+    var downloadLink = document.getElementById("aDownloadLink");
+    downloadLink.onclick = function(){
+      chrome.tabs.create({url: downloadUrl, selected: false});
+      };
 
-function AddEvents()
-{
-  leftImage = document.getElementById("left");
-  leftImage.onmouseover = function () { ChageImage('left'); };
-  leftImage.onmouseout = function () { ChageImage('left'); };
-  leftImage.onclick = function () { Move('-1'); };
+      var imgObj = document.getElementById("imgCenter");
+      imgObj.onclick = function(){
+        chrome.tabs.create({url: downloadUrl, selected: true});
+        };
+  
+  }
+  
+  function Display(index)
+  { 
+    var imgObj = document.getElementById("imgCenter");
+    var imageArtifacts = completeImageCatalog[index];
 
-  rightImage = document.getElementById("right");
-  rightImage.onmouseover = function () { ChageImage('right'); };
-  rightImage.onmouseout = function () { ChageImage('right'); };
-  rightImage.onclick = function () { Move('1'); };
+    if(imageArtifacts === undefined)
+      {
+        
+        var year = Number(completeImageCatalog[index - 1].Year)
+        var month = Number(completeImageCatalog[index - 1].Month)
+        if(month == 1)
+          {
+            month = 12;
+            year -= 1;
+          }
+          else{
+            month -= 1;
+          }
 
-  feedback = document.getElementById("feedback");
-  feedback.onclick = function(){chrome.tabs.create({url: "http://goo.gl/gaI0Pq", selected: true});};
+        dynamicUrl = "https://www.nationalgeographic.com/photography/photo-of-the-day/_jcr_content/.syndication-gallery."+ year +"-"+ month +".json";
+        console.log('dynamicUrl : ' + dynamicUrl);
+        getRemote();
+      }
+      else{
+        imgObj.src = imageArtifacts.Thumbnail;
+        downloadUrl = imageArtifacts.DownloadLink;
+      }
+  
+  }
+  
+  function ChageImage(imgId)
+  {
+      image = document.getElementById(imgId);
+      if(image.src.indexOf("On.png") > 0)
+          image.src = imgId +'.png';
+      else
+          image.src = imgId+'On.png';
+  }
+  
+  var itemIndex  = 0;
 
-}
+  function Move(value)
+  {
 
-
-function main()
-{
-  AddEvents();
-  req.open("GET",feedUrl,false);
-  req.overrideMimeType('text/xml')
-  req.onload = Display;
-  req.send(null);
-}
-
-function Display()
-{ 
-  var doc = req.responseXML;
-  var items = doc.getElementsByTagName("item");
- 
-  var itemText = items[itemIndex].textContent
-  imageText = itemText.slice(itemText.indexOf("<img src="),itemText.indexOf('.jpg"/>'))
-  imageText= imageText+'.jpg" />'
-  //alert(imageText);
-  var myDiv = document.getElementById('myDiv');
-  imageText = imageText.substring(imageText.indexOf('http'),imageText.indexOf('" />'));
-	
-  var imageId = imageText.substring(imageText.lastIndexOf('/')+1,imageText.lastIndexOf('_'));;
-   if(MAX_ITEMS == 0) 
-	MAX_ITEMS = items.length;
-
-  var title = items[itemIndex].textContent;
-  var titleDesc = title;
-  var PicDate = title;
-  var PhotoBy = title;
-  var LnkMainPage = title
-
-  title = title.substr(0, title.indexOf("http"));
-
-var spanTitle = document.getElementById('title');
- spanTitle.innerHTML  = title;
-
- //titleDesc = titleDesc.substring(titleDesc.indexOf("</b></p>")+10, titleDesc.indexOf("</p>"));
- titleDesc = titleDesc.substring(titleDesc.indexOf("</b></p>"));
-  titleDesc = titleDesc.substring(titleDesc.indexOf("<p>")+3);
-  titleDesc = titleDesc.substring(0,titleDesc.indexOf("</p>"));
- //alert(titleDesc);
-//titleDesc = titleDesc.substr(0,100);
-
-  var pTitleDesc = document.getElementById('titleDesc');
- //pTitleDesc.innerHTML  = titleDesc;// +"..."; // Commented this as I didnot want to see desc.
-//alert(imageText);
-
-  var dt = new Date();
-  var wallprId = imageId * (dt.getDay() + 7197)
-
-  var imgObj = document.getElementById("imgCenter");
-  imgObj.src = imageText;
-
- PicDate = PicDate.substring(PicDate.indexOf("MediaEnt.rss"), PicDate.indexOf("Photograph"));
- PicDate = PicDate.substring(PicDate.indexOf("/>")+2,PicDate.Length);
- PicDate = PicDate.substr(2,19);
-
- var spanDate = document.getElementById("Date");
- //spanDate.innerHTML = PicDate;
-
- PhotoBy = PhotoBy.substring(PhotoBy.indexOf("MediaEnt.rss"), PhotoBy.indexOf("Photograph")+75);
- PhotoBy = PhotoBy.substr(PhotoBy.indexOf("Photograph"),75);
- PhotoBy = PhotoBy.substr(0,PhotoBy.lastIndexOf(","));
-
-
- var spanPhotoBy = document.getElementById("photoBy");
- spanPhotoBy.innerHTML = PhotoBy;
-
-
-  var dwnLink = document.getElementById("aDownloadLink");
-
-	// Old style
-	//http://images.nationalgeographic.com/wpf/media-live/photos/000/283/custom/28395_1280x1024-wallpaper-cb1289253003.jpg
-	//http://images.nationalgeographic.com/wpf/media-live/photos/000/284/custom/28400_1600x1200-wallpaper-cb204565200.jpg
-    //var DownldUrl = "http://images.nationalgeographic.com/wpf/media-live/photos/000/"+imageId.substr(0,3)+"/custom/"+
-	//			imageId+"_1600x1200-wallpaper-cb"+wallprId+".jpg"
-	
-	//New
-	//http://images.nationalgeographic.com/wpf/media-live/photos/000/596/cache/midsummer-night-bendiksen_59623_990x742.jpg
-	var DownldUrl = "http://images.nationalgeographic.com/wpf/media-live/photos/000/"+imageId.substr(0,3)+"/cache/"+
-				imageId.substr(0,5)+"_990x742.jpg"
-   dwnLink.onclick = function(){
-   chrome.tabs.create({url: DownldUrl, selected: false});
-   };
-
-  // chrome.browserAction.setBadgeBackgroundColor({color:[0, 255, 0, 100]});
-
-  //  chrome.browserAction.setBadgeText({text:'2'});
-
-
-  LnkMainPage = LnkMainPage.substring(LnkMainPage.indexOf("<a")+2,LnkMainPage.indexOf('">'));
-  LnkMainPage = LnkMainPage.substring(LnkMainPage.indexOf('="')+2);
-  var aMainPagrUrl = document.getElementById("lnkMainPage"); 
-  aMainPagrUrl.href = LnkMainPage;
-}
-
-function ChageImage(imgId)
-{
-	image = document.getElementById(imgId);
-	if(image.src.indexOf("On.png") > 0)
-		image.src = imgId +'.png';
-	else
-		image.src = imgId+'On.png';
-}
-
-var feedUrl = "http://feeds.nationalgeographic.com/ng/photography/photo-of-the-day/";
-
-var req = new XMLHttpRequest();
-var imageText
-var itemIndex  = 0;
-var MAX_ITEMS = 0;
-
-function Move(value)
-{
-
-	itemIndex = (Number(itemIndex) + Number(value)) > 14 ? 0 : (Number(itemIndex) + Number(value))  ;
-	if(itemIndex >= 0)
-	Display();
-	else
-	itemIndex = 0;
-}
+      itemIndex = itemIndex + Number(value); 
+      if(itemIndex >= 0)
+        Display(itemIndex);
+      else
+        itemIndex = 0;
+  }
+  });
+  
+var currentYear =  new Date().getFullYear();
+var currentMonth =  new Date().getMonth() + 1;
+var currentMonthResourceUrl = "https://www.nationalgeographic.com/photography/photo-of-the-day/_jcr_content/.syndication-gallery."+ currentYear +"-"+ currentMonth +".json";
+var dynamicUrl = "";
+var maxImageCounter = 0;
+var currentImageCounter = 0;
+var displayImageCounter = 0;
+var completeImageCatalog = new Object();
+var monthWiseImageCataog = new Object();
+var downloadUrl = "";
